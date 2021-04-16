@@ -9,4 +9,4 @@ t : play with the Terminal""")
     quit()
 
 if __name__ == "__main__":
-    print("Running the program...")
+    print("Running the program")
