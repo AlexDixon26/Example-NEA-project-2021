@@ -1,5 +1,6 @@
 from Game import Game, GameError
 from abc import ABC, abstractmethod
+from tkinter import Button, Tk, Toplevel, Frame, X
 
 class Ui(ABC):
 
@@ -9,10 +10,40 @@ class Ui(ABC):
 
 class Gui(Ui):
     def __init__(self):
+        root = Tk()
+        root.title("Tic Tac Toe")
+        frame = Frame(root)
+        frame.pack()
+        
+        Button(
+            frame,
+            text='Show Help',
+            command= self._help_callback).pack(fill=X)
+        
+        Button(
+            frame,
+            text='Play a Game',
+            command= self._play_callback).pack(fill=X)
+        
+        Button(
+            frame,
+            text='Quit',
+            command = self._quit_callback).pack(fill=X)
+        
+        
+        self.__root = root
+        
+    def _help_callback(self):
         pass
+        
+    def _play_callback(self):
+        pass
+        
+    def _quit_callback(self):
+        self.__root.quit()
 
     def run(self):
-        pass
+        self.__root.mainloop()
 
 class Terminal(Ui):
     def __init__(self):
