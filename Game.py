@@ -1,28 +1,45 @@
-
 class Game:
 
-    EMPTY = " "
-    P1 = "o"
-    P2 = "x"
+    P1 = 'o'
+    P2 = 'x'
+    _EMPTY = ' '
+    _DIM = 3
+
     def __init__(self):
-        self.__board = [[Game.EMPTY]*3 for _ in range(3)]
-        self.__player = Game.P1
+        self._board = [[Game._EMPTY for _ in range(Game._DIM)] for _ in range(Game._DIM)]
+        self._player = Game.P1
 
     def __repr__(self):
-        return ""
+        result = "  " + " ".join(str(i+1) for i in range(Game._DIM))
+        for row in range(Game._DIM):
+            result += f"\n{row+1} " + "|".join(self._board[row])
+            if row != Game._DIM - 1:
+                dashes = "-" * (2 * Game._DIM - 1)
+                result += f"\n  {dashes}"
+        result += f"\n\n{self._player} turn to play"
+        return result
 
     def play(self,row,col):
-        self.__board [row][col] = self.__player
-        self.__player = Game.P1 if self.__player == Game.P2 else Game.P2
+        row -= 1
+        col -= 1
+        self._board[row][col] = self._player
+        self._player = Game.P2 if self._player is Game.P1 else Game.P1
     
     @property
     def winner(self):
-        if self.__board[0][0] == Game.P1 and self.__board[0][1] == Game.P1 and self.__board[0][2] == Game.P1:
-            return True
-        elif self.__board[0][0] == Game.P1 and self.__board[1][0] == Game.P1 and self.__board[2][0] == Game.P1:
-            return True
-        else:
-            return False
+        for p in [Game.P1,Game.P2]:
+            for row in range(Game._DIM):
+                if all(self._board[row][col] is p for col in range(Game._DIM)):
+                    return p
+            for col in range(Game._DIM):
+                if all(self._board[row][col] is p for row in range(Game._DIM)):
+                    return p
+            if all(self._board[i][i] is p for i in range(Game._DIM)):
+                return p
+            if all(self._board[i][Game._DIM - 1 - i] is p for i in range(Game._DIM)):
+                return p
+        return None
 
 if __name__ == "__main__":
-    print("Hello world")
+    g = Game()
+    print(g)
