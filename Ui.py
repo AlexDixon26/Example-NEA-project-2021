@@ -1,4 +1,4 @@
-from Game import Game
+from Game import Game, GameError
 from abc import ABC, abstractmethod
 
 class Ui(ABC):
@@ -30,7 +30,10 @@ class Terminal(Ui):
                 continue
             # range check
             if 1 <= row <= 3 and 1 <= col <= 3:
-                self._game.play(row,col)
+                try:
+                    self._game.play(row,col)
+                except GameError:
+                    print("That space is already occupied!")
             else:
                 print("Row and column must be between 1 and 3")
 
