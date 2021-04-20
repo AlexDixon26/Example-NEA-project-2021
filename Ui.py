@@ -21,9 +21,18 @@ class Terminal(Ui):
     def run(self):
         while not self._game.winner:
             print(self._game)
-            row = int(input("Which row? "))
-            col = int(input("Which column? "))
-            self._game.play(row,col)
+            try:
+                row = int(input("Which row? "))
+                col = int(input("Which column? "))
+            except:
+                # type check
+                print("Non numeric input")
+                continue
+            # range check
+            if 1 <= row <= 3 and 1 <= col <= 3:
+                self._game.play(row,col)
+            else:
+                print("Row and column must be between 1 and 3")
 
         print(self._game)
         w = self._game.winner
