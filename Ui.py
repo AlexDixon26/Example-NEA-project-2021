@@ -1,6 +1,6 @@
 from Game import Game, GameError
 from abc import ABC, abstractmethod
-from tkinter import Button, Tk, Toplevel, Frame, X, StringVar
+from tkinter import END, Button, Tk, Toplevel, Frame, X, StringVar, Text,Scrollbar, LEFT, RIGHT, Y
 from itertools import product
 
 class Ui(ABC):
@@ -31,8 +31,16 @@ class Gui(Ui):
             text='Quit',
             command = self._quit_callback).pack(fill=X)
         
+        console = Text(frame,height=4,width=50)
+        scroll = Scrollbar(frame)
+        scroll.pack(side=RIGHT,fill=Y)
+        console.pack(side=LEFT,fill=Y)
+        
+        scroll.config(command=console.yview)
+        console.config(yscrollcommand=scroll.set)
         
         self.__root = root
+        self.__console = console
         
     def _help_callback(self):
         pass
@@ -60,11 +68,21 @@ class Gui(Ui):
     
     
     def __play_and_refresh(self, row, col):
-        self.__game.play(row+1,col+1)
+        try:
+            self.__game.play(row+1,col+1)
+        except GameError as e:
+            self.__console.insert(END, f"{e}\n")
         
         for row,col in product(range(3),range(3)):
             text = self.__game.at(row+1,col+1)
             self.__buttons[row][col].set(text)
+        
+        w = self.__game.winner
+        if w is not None:
+            if w == Game.DRAW:
+                self.__console.insert(END, "Draw!\n")
+            else:
+                self.__console.insert(END, f"The winner was {w}\n")
         
     def _quit_callback(self):
         self.__root.quit()
