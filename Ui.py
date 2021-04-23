@@ -1,6 +1,6 @@
 from Game import Game, GameError
 from abc import ABC, abstractmethod
-from tkinter import END, Button, Tk, Toplevel, Frame, X, StringVar, Text,Scrollbar, LEFT, RIGHT, Y
+from tkinter import END, Button, Tk, Toplevel, Frame, X, StringVar, Text,Scrollbar, LEFT, RIGHT, Y, Grid, N, S, W, E
 from itertools import product
 
 class Ui(ABC):
@@ -50,7 +50,11 @@ class Gui(Ui):
         game_win = Toplevel(self.__root)
         game_win.title("Game")
         frame = Frame(game_win)
-        frame.grid(row=0,column=0)
+        
+        # resizing
+        Grid.columnconfigure(game_win,0,weight=1)
+        Grid.rowconfigure(game_win,0,weight=1)
+        frame.grid(row=0,column=0,sticky=N+S+W+E)
         
         Button(game_win, text="Dismiss",command=game_win.destroy).grid(row=1,column=0)
         
@@ -63,9 +67,13 @@ class Gui(Ui):
             
             cmd = lambda r=row, c=col: self.__play_and_refresh(r,c)
             
-            Button(frame,textvariable=b,command=cmd).grid(row=row,column=col)
+            Button(frame,textvariable=b,command=cmd).grid(row=row,column=col,sticky=N+S+W+E)
             self.__buttons[row][col] = b
     
+        # resizing
+        for i in range(3):
+            Grid.columnconfigure(frame,i,weight=1)
+            Grid.rowconfigure(frame,i,weight=1)
     
     def __play_and_refresh(self, row, col):
         try:
