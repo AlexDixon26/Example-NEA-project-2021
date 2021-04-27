@@ -1,6 +1,6 @@
 from Game import Game, GameError
 from abc import ABC, abstractmethod
-from tkinter import END, Button, Tk, Toplevel, Frame, X, StringVar, Text,Scrollbar, LEFT, RIGHT, Y, Grid, N, S, W, E
+from tkinter import END, Button, Tk, Toplevel, Frame, X, StringVar, Text,Scrollbar, LEFT, RIGHT, Y, Grid, N, S, W, E, Message
 from itertools import product
 
 class Ui(ABC):
@@ -47,7 +47,10 @@ class Gui(Ui):
         help_win = Toplevel(self.__root)
         help_win.title("Rules of Tic Tac Toe")
         frame = Frame(help_win)
-        Button(help_win, text="Dismiss",command=help_win.destroy).grid(row=1,column=0)
+        help_text = "Surely you know how to play tic tac toe"
+        Message(help_win,text=help_text).pack(fill=X)
+        Button(help_win, text="Dismiss",command=help_win.destroy).pack(fill=X)
+        
         
     def _dismiss_game(self):
         self.__inprogress = False
