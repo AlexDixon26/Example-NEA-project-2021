@@ -11,6 +11,7 @@ class Ui(ABC):
 
 class Gui(Ui):
     def __init__(self):
+        self.__inprogress = False
         root = Tk()
         root.title("Tic Tac Toe")
         frame = Frame(root)
@@ -43,10 +44,22 @@ class Gui(Ui):
         self.__console = console
         
     def _help_callback(self):
-        pass
+        help_win = Toplevel(self.__root)
+        help_win.title("Rules of Tic Tac Toe")
+        frame = Frame(help_win)
+        Button(help_win, text="Dismiss",command=help_win.destroy).grid(row=1,column=0)
         
+    def _dismiss_game(self):
+        self.__inprogress = False
+        self.__gamewindow.destroy()
+                 
     def _play_callback(self):
+        if self.__inprogress:
+                 return
+        
         self.__game = Game()
+        self.__Finished = False
+        self.__inprogress = True
         game_win = Toplevel(self.__root)
         game_win.title("Game")
         frame = Frame(game_win)
@@ -55,8 +68,9 @@ class Gui(Ui):
         Grid.columnconfigure(game_win,0,weight=1)
         Grid.rowconfigure(game_win,0,weight=1)
         frame.grid(row=0,column=0,sticky=N+S+W+E)
-        
-        Button(game_win, text="Dismiss",command=game_win.destroy).grid(row=1,column=0)
+                 
+        self.__gamewindow = game_win
+        Button(game_win, text="Dismiss",command=self._dismiss_game).grid(row=1,column=0)
         
         # Only one game at a time
         self.__buttons = [[None]*3 for _ in range(3)]
@@ -76,6 +90,8 @@ class Gui(Ui):
             Grid.rowconfigure(frame,i,weight=1)
     
     def __play_and_refresh(self, row, col):
+        if self.__Finished:
+            return
         try:
             self.__game.play(row+1,col+1)
         except GameError as e:
@@ -87,6 +103,7 @@ class Gui(Ui):
         
         w = self.__game.winner
         if w is not None:
+            self.__Finished = True
             if w == Game.DRAW:
                 self.__console.insert(END, "Draw!\n")
             else:
